@@ -6,7 +6,8 @@
     "web": "expo start --web",
     "start": "react-native start",
     "test": "jest",
-    "uitest": "detox test --configuration ios"
+    "uitest": "detox test --configuration ios.sim.debug",
+    "build:uitest": "detox build --configuration ios.sim.debug"
   },
   "dependencies": {
     "@types/detox": "^16.4.1",
@@ -16,6 +17,7 @@
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "react-native": "~0.63.3",
+    "react-native-config": "^1.3.3",
     "react-native-gesture-handler": "~1.7.0",
     "react-native-reanimated": "~1.13.0",
     "react-native-screens": "~2.10.1",
@@ -24,6 +26,7 @@
   },
   "devDependencies": {
     "@babel/core": "~7.9.0",
+    "@types/jest": "^26.0.14",
     "@types/react": "~16.9.35",
     "@types/react-dom": "~16.9.8",
     "@types/react-native": "~0.63.2",
@@ -34,6 +37,7 @@
     "jest-cli": "^26.4.2",
     "jest-expo": "~39.0.0",
     "prettier": "^2.1.2",
+    "react-native-testing-library": "^6.0.0",
     "ts-jest": "^26.4.1",
     "typescript": "~3.9.5"
   },

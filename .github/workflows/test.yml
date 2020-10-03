@@ -1,0 +1,26 @@
+name: Test
+on: [push]
+
+jobs:
+  build:
+    name: Test
+    runs-on: macOS-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Set up Node
+        run: |
+          npm install -g react-native-cli
+          npm install -g detox-cli
+          npm install -g yarn
+      - name: Install Detox
+        run: |
+          brew tap wix/brew
+          brew install applesimutils
+      - name: Install Yarn Dependencies
+        run: yarn install
+      - name: Install Pod Dependencies
+        run: cd ./ios && pod install && cd ..
+      - name: Build UI Tests
+        run: yarn build:uitest
+      - name: Run UI Tests
+        run: yarn uitest
