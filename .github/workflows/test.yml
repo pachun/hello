@@ -7,6 +7,10 @@ jobs:
     runs-on: macOS-10.15
     steps:
       - uses: actions/checkout@v2
+      - name: Print Applications
+        run: ls -la /Applications
+      - name: Force Xcode 12
+        run: sudo xcode-select -switch /Applications/Xcode_12.app
       - name: Print Xcode version
         run: xcodebuild -version
       - name: Set up Node
