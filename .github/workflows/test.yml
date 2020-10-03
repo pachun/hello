@@ -4,10 +4,9 @@ on: [push]
 jobs:
   build:
     name: Test
-    runs-on: macOS-latest
+    runs-on: macOS-10.15
     steps:
       - uses: actions/checkout@v2
-      - name: Select Xcode 12
       - name: Print Xcode version
         run: xcodebuild -version
       - name: Set up Node
