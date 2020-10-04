@@ -3,26 +3,49 @@ on: [push]
 
 jobs:
   build:
-    name: Test
     runs-on: macOS-10.15
+    timeout-minutes: 15
+
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_12.app
+
     steps:
-      - uses: actions/checkout@v2
-      - name: Use Xcode 12
-        run: sudo xcode-select -switch /Applications/Xcode_12.app
-      - name: Set up Node
-        run: |
-          npm install -g react-native-cli
-          npm install -g detox-cli
-          npm install -g yarn
-      - name: Install Detox
-        run: |
-          brew tap wix/brew
-          brew install applesimutils
-      - name: Install Yarn Dependencies
+      - name: Checkout
+        uses: actions/checkout@v1
+        with:
+          fetch-depth: 1
+
+      - name: Node
+        uses: actions/setup-node@v1
+
+      - name: Cache node modules
+        uses: actions/cache@v1
+        id: cache
+        with:
+          path: node_modules
+          key: node-modules-${{ hashFiles('**/yarn.lock') }}
+
+      - name: Rebuild detox
+        if: steps.cache.outputs.cache-hit == 'true'
+        run: yarn detox clean-framework-cache && yarn detox build-framework-cache
+
+      - name: Install Dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
         run: yarn install
-      - name: Install Pod Dependencies
-        run: cd ./ios && pod install && cd ..
-      - name: Build UI Tests
-        run: yarn build:uitest
-      - name: Run UI Tests
-        run: yarn uitest
+
+      - name: Cache Pods
+        uses: actions/cache@v1
+        id: podcache
+        with:
+          path: ios/Pods
+          key: pods-${{ hashFiles('**/Podfile.lock') }}
+
+      - name: Update Pods
+        run: |
+          gem update cocoapods xcodeproj
+          cd ios && pod install && cd ..
+
+      - run: brew tap wix/brew
+      - run: brew install applesimutils
+      - run: yarn detox build e2e --configuration ios.sim.debug
+      - run: yarn detox test e2e --configuration ios.sim.debug --cleanup --debug-synchronization 200
